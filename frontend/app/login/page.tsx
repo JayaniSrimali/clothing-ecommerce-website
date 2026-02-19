@@ -1,89 +1,95 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function Login() {
+export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const { login } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Demo login implementation
-        console.log('Login attempt', { email, password });
-        router.push('/');
+        try {
+            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            login(res.data.token, res.data.user);
+        } catch (err: any) {
+            setError(err.response?.data?.msg || 'Login failed');
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md p-8 bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl relative overflow-hidden"
-            >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-tr from-purple-500/20 to-pink-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-bl from-indigo-500/20 to-blue-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
+        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-black text-white">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-white">
+                    Sign in to your account
+                </h2>
+            </div>
 
-                <div className="relative z-10 text-center mb-8">
-                    <h1 className="text-3xl font-black mb-2 tracking-tight text-white">
-                        Welcome Back
-                    </h1>
-                    <p className="text-gray-400">Sign in to access your saved items</p>
-                </div>
+            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    {error && <div className="text-red-500 text-center">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
-                    <div className="space-y-4">
-                        <div className="relative group focus-within:ring-2 ring-purple-500/50 rounded-xl transition-all">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300">
+                            Email address
+                        </label>
+                        <div className="mt-2">
                             <input
+                                id="email"
+                                name="email"
                                 type="email"
-                                placeholder="Email Address"
+                                autoComplete="email"
+                                required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                                required
+                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
+                    </div>
 
-                        <div className="relative group focus-within:ring-2 ring-pink-500/50 rounded-xl transition-all">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-pink-400 transition-colors" />
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-300">
+                                Password
+                            </label>
+                        </div>
+                        <div className="mt-2">
                             <input
+                                id="password"
+                                name="password"
                                 type="password"
-                                placeholder="Password"
+                                autoComplete="current-password"
+                                required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition-colors"
-                                required
+                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center gap-2 cursor-pointer text-gray-400 hover:text-white transition-colors">
-                            <input type="checkbox" className="accent-purple-500 w-4 h-4 rounded border-gray-700 bg-gray-800" />
-                            Remember me
-                        </label>
-                        <a href="#" className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 hover:opacity-80 transition-opacity">
-                            Forgot Password?
-                        </a>
+                    <div>
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+                        >
+                            Sign in
+                        </button>
                     </div>
-
-                    <button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-purple-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                    >
-                        <LogIn className="w-5 h-5" /> Sign In
-                    </button>
                 </form>
 
-                <p className="mt-8 text-center text-gray-500 text-sm relative z-10">
-                    Don't have an account? <Link href="/register" className="text-white hover:underline decoration-purple-500 decoration-2 underline-offset-4">Create one now</Link>
+                <p className="mt-10 text-center text-sm text-gray-400">
+                    Not a member?{' '}
+                    <Link href="/register" className="font-semibold leading-6 text-purple-400 hover:text-purple-300">
+                        Start a 14 day free trial
+                    </Link>
                 </p>
-            </motion.div>
+            </div>
         </div>
     );
 }

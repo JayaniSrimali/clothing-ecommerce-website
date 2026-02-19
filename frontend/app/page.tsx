@@ -1,152 +1,207 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/data/products'; // Use mock for consistency first
-import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, ShoppingBag, Star, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, Globe, ShieldCheck, Truck } from 'lucide-react';
 import Link from 'next/link';
 
+interface Product {
+    _id: string;
+    title: string;
+    price: number;
+    image: string;
+    category: string;
+}
+
 export default function Home() {
-  const featuredProducts = products.slice(0, 4);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const { scrollYProgress } = useScroll();
+    const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
-  return (
-    <div className="bg-gray-950 min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-gray-950 z-10" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-900/40 via-gray-950/60 to-gray-950 z-0" />
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/api/products');
+                setProducts(res.data);
+            } catch (err) {
+                console.error('Failed to fetch products', err);
+                setProducts([
+                    { _id: '1', title: 'Midnight Silk Bomber', price: 299.99, image: 'https://images.unsplash.com/photo-1551028919-64d60d47345a', category: 'jackets' },
+                    { _id: '2', title: 'Ethereal Summer Dress', price: 159.50, image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1', category: 'dresses' },
+                    { _id: '3', title: 'Urban Tech Hoodie', price: 89.99, image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7', category: 'hoodies' },
+                    { _id: '4', title: 'Vintage Denim', price: 79.99, image: 'https://images.unsplash.com/photo-1542272617-08f086303294', category: 'denim' },
+                ]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
 
-        <motion.div
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 z-0"
-        >
-          <img
-            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2073&q=80"
-            alt="Hero Background"
-            className="w-full h-full object-cover opacity-60"
-          />
-        </motion.div>
+    return (
+        <div className="bg-black min-h-screen text-white overflow-hidden">
 
-        <div className="relative z-20 text-center max-w-5xl mx-auto px-6 mt-16">
-          <motion.h1
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-7xl md:text-9xl font-black mb-8 leading-none tracking-tighter mix-blend-overlay text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-          >
-            ELEVATE
-            <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
-              ESSENTIALS
-            </span>
-          </motion.h1>
+            {/* 1. Immersive Hero Section */}
+            <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+                {/* Background Video/Image */}
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30 z-10" />
+                    <img
+                        src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+                        alt="Hero Fashion"
+                        className="w-full h-full object-cover opacity-80"
+                    />
+                </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-xl md:text-2xl text-gray-200 mb-12 font-light tracking-wide max-w-2xl mx-auto drop-shadow-lg"
-          >
-            Discover the new era of luxury streetwear. Meticulously crafted for the bold.
-          </motion.p>
+                {/* Content */}
+                <div className="relative z-20 text-center space-y-8 px-4">
+                    <motion.div
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                    >
+                        <h1 className="text-[12vw] font-black leading-none tracking-tighter mix-blend-difference text-white">
+                            ELEVATE
+                        </h1>
+                        <h1 className="text-[12vw] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500">
+                            YOURSELF
+                        </h1>
+                    </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-          >
-            <Link href="/shop" className="group relative px-10 py-5 bg-white text-black font-bold text-lg rounded-full overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_-10px_rgba(255,255,255,0.5)]">
-              <span className="relative z-10 flex items-center gap-2">
-                Shop Collection <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </Link>
-          </motion.div>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="text-xl md:text-2xl font-light tracking-wide text-gray-300 max-w-2xl mx-auto"
+                    >
+                        Where luxury meets the streets. Defined by attitude, tailored for impact.
+                    </motion.p>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 1 }}
+                    >
+                        <Link href="/shop" className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                            Shop The Collection <ArrowRight size={20} />
+                        </Link>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* 2. Scrolling Marquee */}
+            <div className="py-12 bg-purple-600 overflow-hidden whitespace-nowrap -rotate-1 origin-left scale-105">
+                <motion.div
+                    animate={{ x: [0, -1000] }}
+                    transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                    className="flex space-x-12 text-4xl font-bold uppercase tracking-widest text-black/80"
+                >
+                    {Array(10).fill("New Collection Drop • Free Shipping Worldwide • Premium Quality • ").map((text, i) => (
+                        <span key={i}>{text}</span>
+                    ))}
+                </motion.div>
+            </div>
+
+            {/* 3. Featured Categories */}
+            <section className="py-24 px-4 md:px-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[600px]">
+                    <motion.div
+                        whileHover={{ scale: 0.98 }}
+                        className="relative rounded-2xl overflow-hidden group h-full"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            alt="Women"
+                        />
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                            <h2 className="text-6xl font-black uppercase tracking-tighter">Women</h2>
+                        </div>
+                    </motion.div>
+                    <div className="grid grid-rows-2 gap-4 h-full">
+                        <motion.div
+                            whileHover={{ scale: 0.98 }}
+                            className="relative rounded-2xl overflow-hidden group h-full"
+                        >
+                            <img
+                                src="https://images.unsplash.com/photo-1542272617-08f086303294?auto=format&fit=crop&w=800&q=80"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                alt="Men"
+                            />
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                <h2 className="text-4xl font-bold uppercase tracking-widest">Men</h2>
+                            </div>
+                        </motion.div>
+                        <motion.div
+                            whileHover={{ scale: 0.98 }}
+                            className="relative rounded-2xl overflow-hidden group h-full bg-zinc-900 flex items-center justify-center"
+                        >
+                            <div className="text-center p-8">
+                                <h3 className="text-3xl font-bold mb-4 text-gradient">Accessories</h3>
+                                <p className="text-gray-400 mb-6">Complete your look with our curated selection.</p>
+                                <Link href="/shop" className="text-white border-b border-white pb-1 hover:text-purple-400 hover:border-purple-400 transition-colors">
+                                    View Items &rarr;
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 4. Latest Drops */}
+            <section className="py-24 bg-zinc-950">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="flex justify-between items-end mb-16">
+                        <div>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-4">Latest Drops</h2>
+                            <div className="h-1 w-24 bg-purple-500 rounded-full" />
+                        </div>
+                        <Link href="/shop" className="hidden md:block text-gray-400 hover:text-white transition-colors">
+                            View All Products
+                        </Link>
+                    </div>
+
+                    {loading ? (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                            {[1, 2, 3, 4].map(i => (
+                                <div key={i} className="aspect-[3/4] bg-zinc-900 rounded-lg animate-pulse" />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {products.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="mt-12 text-center md:hidden">
+                        <Link href="/shop" className="inline-block px-8 py-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-colors">
+                            View All Products
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. Values */}
+            <section className="py-24 border-t border-white/10">
+                <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-12 text-center">
+                    {[
+                        { icon: <Globe className="w-10 h-10 mb-6 text-purple-500 mx-auto" />, title: "Global Shipping", desc: "We ship to over 50 countries worldwide." },
+                        { icon: <ShieldCheck className="w-10 h-10 mb-6 text-pink-500 mx-auto" />, title: "Secure Payments", desc: "Your data is protected with 256-bit encryption." },
+                        { icon: <Truck className="w-10 h-10 mb-6 text-indigo-500 mx-auto" />, title: "Fast Delivery", desc: "Get your order in 3-5 business days." },
+                    ].map((item, idx) => (
+                        <div key={idx} className="p-8 bg-zinc-900/50 rounded-2xl hover:bg-zinc-900 transition-colors">
+                            {item.icon}
+                            <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                            <p className="text-gray-400">{item.desc}</p>
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
-
-        {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce z-20"
-        >
-          <div className="w-[1px] h-16 bg-gradient-to-b from-white to-transparent mx-auto mb-2"></div>
-        </motion.div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="container mx-auto px-6 -mt-24 relative z-30 mb-32">
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { icon: <Zap className="w-10 h-10 text-yellow-400" />, title: "Instant Delivery", desc: "Same-day dispatch on all orders placed before 2PM." },
-            { icon: <Star className="w-10 h-10 text-purple-400" />, title: "Premium Materials", desc: "Sourced from the finest mills in Italy and Japan." },
-            { icon: <ShoppingBag className="w-10 h-10 text-pink-400" />, title: "Secure Shopping", desc: "Protected by industry-leading encryption standards." },
-          ].map((feature, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="p-8 rounded-3xl bg-gray-900/80 border border-gray-800 backdrop-blur-xl hover:bg-gray-800/80 transition-colors shadow-2xl"
-            >
-              <div className="mb-6 bg-gray-800/50 w-20 h-20 rounded-2xl flex items-center justify-center border border-gray-700/50">
-                {feature.icon}
-              </div>
-              <h3 className="text-2xl font-bold mb-3 text-white">{feature.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="container mx-auto px-6 mb-32">
-        <div className="flex items-end justify-between mb-16">
-          <div>
-            <span className="text-purple-500 font-bold uppercase tracking-widest mb-2 block">New Arrivals</span>
-            <h2 className="text-5xl font-black text-white">Trending Now</h2>
-          </div>
-          <Link href="/shop" className="group text-white font-bold flex items-center gap-2 border-b border-white/20 pb-1 hover:border-white transition-colors">
-            View All Products <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredProducts.map((product) => (
-            //@ts-ignore
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/20 to-purple-900/20 z-0"></div>
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight text-white">
-            Join the <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Inner Circle</span>
-          </h2>
-          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-            Get exclusive access to limited drops, events, and member-only pricing.
-          </p>
-
-          <form className="max-w-xl mx-auto flex flex-col sm:flex-row gap-4">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="flex-1 bg-gray-900/50 border border-gray-700 rounded-full px-8 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 backdrop-blur-sm transition-all"
-            />
-            <button className="bg-white text-black font-bold px-10 py-4 rounded-full hover:bg-gray-200 transition-transform active:scale-95 shadow-lg shadow-white/10">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
-    </div>
-  );
+    );
 }

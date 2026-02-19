@@ -1,97 +1,111 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { User, Mail, Lock, CheckCircle } from 'lucide-react';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function Register() {
+export default function RegisterPage() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Demo registration implementation
-        console.log('Registration attempt', { name, email, password });
-        router.push('/login');
+        try {
+            await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+            router.push('/login');
+        } catch (err: any) {
+            setError(err.response?.data?.msg || 'Registration failed');
+        }
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-md p-8 bg-gray-900 border border-gray-800 rounded-3xl shadow-2xl relative overflow-hidden"
-            >
-                <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-indigo-500/20 to-blue-500/20 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/3"></div>
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-pink-500/20 to-purple-500/20 rounded-full blur-3xl translate-y-1/2 translate-x-1/3"></div>
+        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-black text-white">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-white">
+                    Create an account
+                </h2>
+            </div>
 
-                <div className="relative z-10 text-center mb-8">
-                    <h1 className="text-3xl font-black mb-2 tracking-tight text-white">
-                        Create Account
-                    </h1>
-                    <p className="text-gray-400">Join the exclusive community</p>
-                </div>
+            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    {error && <div className="text-red-500 text-center">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="relative z-10 space-y-6">
-                    <div className="space-y-4">
-                        <div className="relative group focus-within:ring-2 ring-indigo-500/50 rounded-xl transition-all">
-                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-indigo-400 transition-colors" />
+                    <div>
+                        <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-300">
+                            Full Name
+                        </label>
+                        <div className="mt-2">
                             <input
+                                id="name"
+                                name="name"
                                 type="text"
-                                placeholder="Full Name"
+                                required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
-                                required
+                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
+                    </div>
 
-                        <div className="relative group focus-within:ring-2 ring-purple-500/50 rounded-xl transition-all">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300">
+                            Email address
+                        </label>
+                        <div className="mt-2">
                             <input
+                                id="email"
+                                name="email"
                                 type="email"
-                                placeholder="Email Address"
+                                autoComplete="email"
+                                required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
-                                required
+                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
+                    </div>
 
-                        <div className="relative group focus-within:ring-2 ring-pink-500/50 rounded-xl transition-all">
-                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-pink-400 transition-colors" />
+                    <div>
+                        <div className="flex items-center justify-between">
+                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-300">
+                                Password
+                            </label>
+                        </div>
+                        <div className="mt-2">
                             <input
+                                id="password"
+                                name="password"
                                 type="password"
-                                placeholder="Secure Password"
+                                autoComplete="new-password"
+                                required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-12 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-pink-500 transition-colors"
-                                required
+                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span>I agree to the <a href="#" className="underline hover:text-white">Terms & Conditions</a></span>
+                    <div>
+                        <button
+                            type="submit"
+                            className="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+                        >
+                            Sign up
+                        </button>
                     </div>
-
-                    <button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-pink-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                    >
-                        Create My Account
-                    </button>
                 </form>
 
-                <p className="mt-8 text-center text-gray-500 text-sm relative z-10 transition-all hover:text-gray-400">
-                    Already have an account? <Link href="/login" className="text-white hover:underline decoration-indigo-500 decoration-2 underline-offset-4">Sign in instead</Link>
+                <p className="mt-10 text-center text-sm text-gray-400">
+                    Already a member?{' '}
+                    <Link href="/login" className="font-semibold leading-6 text-purple-400 hover:text-purple-300">
+                        Sign in
+                    </Link>
                 </p>
-            </motion.div>
+            </div>
         </div>
     );
 }
