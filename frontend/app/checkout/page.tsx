@@ -2,161 +2,160 @@
 
 import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function CheckoutPage() {
-    const { cart, cartTotal, clearCart } = useCart();
-    const { user, token } = useAuth();
-    const router = useRouter();
+    const { cart, removeFromCart, clearCart } = useCart();
+    const [step, setStep] = useState(1);
+    const [formData, setFormData] = useState({
+        email: '',
+        firstName: '',
+        lastName: '',
+        address: '',
+        city: '',
+        postalCode: '',
+        country: '',
+        paymentMethod: 'card'
+    });
 
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
-    const [postalCode, setPostalCode] = useState('');
-    const [country, setCountry] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Stripe');
-    const [isProcessing, setIsProcessing] = useState(false);
+    const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shipping = subtotal > 200 ? 0 : 15;
+    const total = subtotal + shipping;
 
-    const handlePlaceOrder = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsProcessing(true);
-
-        try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            };
-
-            const orderData = {
-                orderItems: cart.map(item => ({
-                    product: item.id,
-                    name: item.name,
-                    image: item.image,
-                    price: item.price,
-                    quantity: item.quantity,
-                })),
-                shippingAddress: { address, city, postalCode, country },
-                paymentMethod,
-                itemsPrice: cartTotal,
-                taxPrice: 0,
-                shippingPrice: 0,
-                totalPrice: cartTotal,
-            };
-
-            await axios.post('http://localhost:5000/api/orders', orderData, config);
-
-            clearCart();
-            router.push('/order-success');
-        } catch (error) {
-            console.error(error);
-            alert('Failed to place order');
-        } finally {
-            setIsProcessing(false);
-        }
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    if (!user) {
-        router.push('/login');
-        return null;
+    const handlePlaceOrder = () => {
+        // Mock order placement
+        clearCart();
+        window.location.href = '/order-success';
+    };
+
+    if (cart.length === 0) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white text-primary">
+                <h2 className="text-3xl font-serif mb-4">Your cart is empty</h2>
+                <Link href="/shop" className="px-8 py-3 bg-primary text-white hover:bg-secondary transition-colors">
+                    Continue Shopping
+                </Link>
+            </div>
+        );
     }
 
     return (
-        <div className="min-h-screen bg-black text-white pt-24 px-4 pb-12">
-            <div className="max-w-3xl mx-auto">
-                <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
+        <div className="bg-white min-h-screen pt-24 pb-12 text-primary">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12">
+                {/* Checkout Form */}
+                <div className="space-y-8">
+                    <div className="flex items-center space-x-4 mb-8">
+                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${step === 1 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>1</span>
+                        <h2 className="text-2xl font-serif">Shipping Information</h2>
+                    </div>
 
-                <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800">
-                    <form onSubmit={handlePlaceOrder} className="space-y-6">
-                        <h2 className="text-xl font-bold mb-4 border-b border-gray-800 pb-2">Shipping Address</h2>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Address</label>
-                            <input
-                                type="text"
-                                required
-                                value={address}
-                                onChange={(e) => setAddress(e.target.value)}
-                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-purple-500"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
+                    <form className="space-y-6">
+                        <div className="grid grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-400 mb-1">City</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-purple-500"
-                                />
+                                <label className="block text-sm font-medium mb-1">First Name</label>
+                                <input type="text" name="firstName" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-400 mb-1">Postal Code</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={postalCode}
-                                    onChange={(e) => setPostalCode(e.target.value)}
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-purple-500"
-                                />
+                                <label className="block text-sm font-medium mb-1">Last Name</label>
+                                <input type="text" name="lastName" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
                             </div>
                         </div>
-
                         <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-1">Country</label>
-                            <input
-                                type="text"
-                                required
-                                value={country}
-                                onChange={(e) => setCountry(e.target.value)}
-                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-purple-500"
-                            />
+                            <label className="block text-sm font-medium mb-1">Email Address</label>
+                            <input type="email" name="email" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Address</label>
+                            <input type="text" name="address" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
+                        </div>
+                        <div className="grid grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-medium mb-1">City</label>
+                                <input type="text" name="city" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Postal Code</label>
+                                <input type="text" name="postalCode" onChange={handleChange} className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm" required />
+                            </div>
+                        </div>
+                    </form>
 
-                        <h2 className="text-xl font-bold mb-4 border-b border-gray-800 pb-2 mt-8">Payment Method</h2>
-                        <div className="flex gap-4">
-                            <label className="flex items-center gap-2 cursor-pointer bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-purple-500 transition-all flex-1">
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Stripe"
-                                    checked={paymentMethod === 'Stripe'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                    className="accent-purple-500 w-5 h-5"
-                                />
-                                <span className="font-medium">Credit Card (Stripe)</span>
+                    <div className="flex items-center space-x-4 mb-8 mt-12">
+                        <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${step === 2 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'}`}>2</span>
+                        <h2 className="text-2xl font-serif">Payment Details</h2>
+                    </div>
+
+                    <div className="bg-cream p-6 rounded-sm border border-primary/10">
+                        <p className="text-sm text-gray-500 mb-4">Select Payment Method</p>
+                        <div className="space-y-3">
+                            <label className="flex items-center space-x-3 p-3 border border-gray-200 bg-white cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="payment" className="text-primary focus:ring-primary" defaultChecked />
+                                <span className="font-medium">Credit Card</span>
                             </label>
-                            <label className="flex items-center gap-2 cursor-pointer bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-purple-500 transition-all flex-1">
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="PayPal"
-                                    checked={paymentMethod === 'PayPal'}
-                                    onChange={(e) => setPaymentMethod(e.target.value)}
-                                    className="accent-purple-500 w-5 h-5"
-                                />
+                            <label className="flex items-center space-x-3 p-3 border border-gray-200 bg-white cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="payment" className="text-primary focus:ring-primary" />
                                 <span className="font-medium">PayPal</span>
                             </label>
                         </div>
 
-                        <div className="border-t border-gray-800 pt-6 mt-8">
-                            <div className="flex justify-between text-xl font-bold mb-6">
-                                <span>Total Amount</span>
-                                <span>${cartTotal.toFixed(2)}</span>
+                        {/* Mock Card Input */}
+                        <div className="mt-6 space-y-4">
+                            <input type="text" placeholder="Card Number" className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm bg-white" />
+                            <div className="grid grid-cols-2 gap-4">
+                                <input type="text" placeholder="MM/YY" className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm bg-white" />
+                                <input type="text" placeholder="CVC" className="w-full border-gray-300 focus:border-primary focus:ring-primary h-12 px-4 shadow-sm bg-white" />
                             </div>
-
-                            <button
-                                type="submit"
-                                disabled={isProcessing}
-                                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {isProcessing ? 'Processing Order...' : 'Place Order'}
-                            </button>
                         </div>
-                    </form>
+                    </div>
+
+                    <button
+                        onClick={handlePlaceOrder}
+                        className="w-full bg-primary text-white py-4 font-bold hover:bg-secondary transition-colors shadow-xl mt-8"
+                    >
+                        Place Order (${total.toFixed(2)})
+                    </button>
+                </div>
+
+                {/* Order Summary */}
+                <div className="bg-gray-50 p-8 h-fit sticky top-24 rounded-sm border border-gray-200">
+                    <h2 className="text-2xl font-serif mb-6">Order Summary</h2>
+                    <div className="space-y-4 mb-6">
+                        {cart.map((item) => (
+                            <div key={item.id} className="flex justify-between items-start">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-16 h-16 bg-white border border-gray-200 rounded-sm overflow-hidden">
+                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-medium text-primary">{item.name}</h3>
+                                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                                    </div>
+                                </div>
+                                <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="border-t border-gray-200 pt-4 space-y-2 text-gray-600">
+                        <div className="flex justify-between">
+                            <span>Subtotal</span>
+                            <span>${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span>Shipping</span>
+                            <span>${shipping.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div className="border-t border-gray-200 pt-4 mt-4 flex justify-between items-center font-bold text-xl text-primary">
+                        <span>Total</span>
+                        <span>${total.toFixed(2)}</span>
+                    </div>
                 </div>
             </div>
         </div>
