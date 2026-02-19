@@ -16,15 +16,14 @@ export default function Navbar() {
     const { wishlist } = useWishlist();
     const pathname = usePathname();
 
-    // Hide Navbar on admin pages
-    if (pathname.startsWith('/admin')) return null;
+    // Hide Navbar on admin, login, register, forgot-password, and reset-password pages
+    if (pathname.startsWith('/admin') || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname.startsWith('/reset-password')) return null;
 
     const navLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Men', href: '/shop?category=men' },
-        { name: 'Women', href: '/shop?category=women' },
-        { name: 'Kids', href: '/shop?category=kids' },
         { name: 'Shop', href: '/shop' },
+        { name: 'About', href: '/about' },
+        { name: 'Contact', href: '/contact' },
         { name: 'Sale', href: '/shop?sale=true', isSale: true },
     ];
 
