@@ -19,76 +19,83 @@ export default function LoginPage() {
             const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
             login(res.data.token, res.data.user);
         } catch (err: any) {
-            setError(err.response?.data?.msg || 'Login failed');
+            setError(err.response?.data?.message || 'Login failed');
         }
     };
 
     return (
-        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-black text-white">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-white">
-                    Sign in to your account
-                </h2>
-            </div>
+        <div className="min-h-screen flex bg-white">
+            {/* Left Side - Form */}
+            <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-12 lg:p-16">
+                <div className="max-w-md w-full space-y-8">
+                    <div className="text-center md:text-left">
+                        <h2 className="text-3xl font-serif text-primary mb-2">Welcome Back</h2>
+                        <p className="text-gray-500">Sign in to continue your journey.</p>
+                    </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                    {error && <div className="text-red-500 text-center">{error}</div>}
+                    {error && <div className="text-red-500 bg-red-50 p-3 text-sm">{error}</div>}
 
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300">
-                            Email address
-                        </label>
-                        <div className="mt-2">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <input
-                                id="email"
-                                name="email"
                                 type="email"
-                                autoComplete="email"
                                 required
+                                className="w-full px-4 py-3 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                placeholder="name@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-300">
-                                Password
-                            </label>
-                        </div>
-                        <div className="mt-2">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                             <input
-                                id="password"
-                                name="password"
                                 type="password"
-                                autoComplete="current-password"
                                 required
+                                className="w-full px-4 py-3 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
-                    </div>
 
-                    <div>
+                        <div className="flex items-center justify-between text-sm">
+                            <label className="flex items-center text-gray-500">
+                                <input type="checkbox" className="mr-2 text-primary focus:ring-primary border-gray-300 rounded" />
+                                Remember me
+                            </label>
+                            <Link href="/forgot-password" title="Forgot password" className="font-medium text-primary hover:text-secondary">Forgot password?</Link>
+                        </div>
+
                         <button
                             type="submit"
-                            className="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+                            className="w-full py-4 bg-primary text-white font-medium hover:bg-secondary transition-colors shadow-lg"
                         >
-                            Sign in
+                            Sign In
                         </button>
-                    </div>
-                </form>
+                    </form>
 
-                <p className="mt-10 text-center text-sm text-gray-400">
-                    Not a member?{' '}
-                    <Link href="/register" className="font-semibold leading-6 text-purple-400 hover:text-purple-300">
-                        Start a 14 day free trial
-                    </Link>
-                </p>
+                    <p className="text-center text-sm text-gray-500 mt-8">
+                        Don't have an account?{' '}
+                        <Link href="/register" className="font-semibold text-primary hover:underline">
+                            Create Account
+                        </Link>
+                    </p>
+                </div>
+            </div>
+
+            {/* Right Side - Image */}
+            <div className="hidden md:block w-1/2 relative bg-cream">
+                <img
+                    src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80"
+                    alt="Fashion"
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-primary/20 mix-blend-multiply" />
+                <div className="absolute bottom-12 left-12 text-white">
+                    <h3 className="text-4xl font-serif mb-4">Redefining Elegance.</h3>
+                    <p className="text-lg text-white/90 max-w-md">Join our community and experience luxury like never before.</p>
+                </div>
             </div>
         </div>
     );

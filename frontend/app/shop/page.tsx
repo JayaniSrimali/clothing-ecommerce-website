@@ -23,26 +23,29 @@ export default function Shop() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/products'); // Replace with your actual API endpoint
-                setProducts(res.data);
-                setFilteredProducts(res.data);
-
-                // Extract unique categories
-                const cats = ['All', ...new Set(res.data.map((p: Product) => p.category))];
-                setCategories(cats as string[]);
+                // Fetch from API
+                const res = await axios.get('http://localhost:5000/api/products');
+                if (res.data && res.data.length > 0) {
+                    setProducts(res.data);
+                    setFilteredProducts(res.data);
+                    const cats = ['All', ...new Set(res.data.map((p: Product) => p.category))];
+                    setCategories(cats as string[]);
+                } else {
+                    throw new Error("No products found");
+                }
             } catch (err) {
-                // Fallback data
+                // Fallback data matching the brown aesthetic
                 const demoProducts = [
-                    { _id: '1', title: 'Midnight Silk Bomber', price: 299.99, image: 'https://images.unsplash.com/photo-1551028919-64d60d47345a', category: 'jackets' },
-                    { _id: '2', title: 'Ethereal Summer Dress', price: 159.50, image: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1', category: 'dresses' },
-                    { _id: '3', title: 'Urban Tech Hoodie', price: 89.99, image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7', category: 'hoodies' },
-                    { _id: '4', title: 'Vintage Denim', price: 79.99, image: 'https://images.unsplash.com/photo-1542272617-08f086303294', category: 'denim' },
-                    { _id: '5', title: 'Classic White Tee', price: 29.99, image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab', category: 't-shirts' },
-                    { _id: '6', title: 'Leather Boots', price: 199.99, image: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f', category: 'shoes' },
+                    { _id: '1', title: 'Wool Blend Coat', price: 299.99, image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1036', category: 'jackets' },
+                    { _id: '2', title: 'Linen Summer Dress', price: 159.50, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1083', category: 'dresses' },
+                    { _id: '3', title: 'Cashmere Sweater', price: 89.99, image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000', category: 'hoodies' },
+                    { _id: '4', title: 'Classic Chinos', price: 79.99, image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=1000', category: 'pants' },
+                    { _id: '5', title: 'Silk Blouse', price: 120.00, image: 'https://images.unsplash.com/photo-1517445312882-566f1745d9b3?q=80&w=1000', category: 'shirts' },
+                    { _id: '6', title: 'Leather Loafers', price: 199.99, image: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=1000', category: 'shoes' },
                 ];
                 setProducts(demoProducts);
                 setFilteredProducts(demoProducts);
-                setCategories(['All', 'jackets', 'dresses', 'hoodies', 'denim', 't-shirts', 'shoes']);
+                setCategories(['All', 'jackets', 'dresses', 'hoodies', 'pants', 'shirts', 'shoes']);
             } finally {
                 setLoading(false);
             }
@@ -60,18 +63,18 @@ export default function Shop() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white pt-24 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-white text-primary pt-24 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="text-center mb-16"
                 >
-                    <h1 className="text-4xl md:text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-                        THE COLLECTION
+                    <h1 className="text-4xl md:text-6xl font-serif mb-4 text-primary">
+                        The Collection
                     </h1>
-                    <p className="text-gray-400 max-w-2xl mx-auto">
-                        Browse our exclusive range of premium apparel. Designed for those who dare to stand out.
+                    <p className="text-gray-500 max-w-2xl mx-auto font-light">
+                        Discover our range of ethically sourced, premium apparel.
                     </p>
                 </motion.div>
 
@@ -81,9 +84,9 @@ export default function Shop() {
                         <button
                             key={category}
                             onClick={() => handleCategoryChange(category)}
-                            className={`px-6 py-2 rounded-full text-sm font-bold uppercase tracking-wider transition-all ${selectedCategory === category
-                                    ? 'bg-white text-black scale-105 shadow-glow'
-                                    : 'bg-zinc-900 text-gray-400 hover:bg-zinc-800'
+                            className={`px-6 py-2 rounded-none text-sm font-medium uppercase tracking-wider transition-all border ${selectedCategory === category
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-white text-gray-500 border-gray-200 hover:border-primary hover:text-primary'
                                 }`}
                         >
                             {category}
@@ -93,7 +96,7 @@ export default function Shop() {
 
                 {/* Grid */}
                 {loading ? (
-                    <div className="flex justify-center h-64"><div className="animate-spin h-12 w-12 border-t-2 border-purple-500 rounded-full" /></div>
+                    <div className="flex justify-center h-64"><div className="animate-spin h-12 w-12 border-t-2 border-primary rounded-full" /></div>
                 ) : (
                     <motion.div
                         layout
@@ -106,7 +109,7 @@ export default function Shop() {
                 )}
 
                 {filteredProducts.length === 0 && !loading && (
-                    <div className="text-center py-24 text-gray-500">No products found in this category.</div>
+                    <div className="text-center py-24 text-gray-500 font-light">No products found in this category.</div>
                 )}
             </div>
         </div>

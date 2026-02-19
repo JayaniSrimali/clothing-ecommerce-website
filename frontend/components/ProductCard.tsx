@@ -18,41 +18,46 @@ export default function ProductCard({ product }: { product: Product }) {
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="group relative"
         >
-            <div className="relative aspect-[3/4] overflow-hidden rounded-sm bg-gray-900">
+            <div className="relative aspect-[3/4] overflow-hidden bg-cream">
                 <img
                     src={product.image}
                     alt={product.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {/* Quick Actions */}
-                <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out flex justify-center gap-2">
+                {/* Quick Actions (Slide Up) */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3 translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                     <button
                         onClick={() => addToCart({ id: product._id, name: product.title, price: product.price, image: product.image, quantity: 1 })}
-                        className="bg-white text-black p-3 rounded-full hover:bg-gray-200 shadow-lg transform active:scale-95 transition-all"
+                        className="bg-white text-primary p-3 rounded-full hover:bg-primary hover:text-white shadow-lg transition-colors border border-primary/10"
+                        title="Add to Cart"
                     >
                         <Plus className="w-5 h-5" />
                     </button>
-                    <Link href={`/product/${product._id}`} className="bg-white text-black p-3 rounded-full hover:bg-gray-200 shadow-lg transform active:scale-95 transition-all">
+                    <Link
+                        href={`/product/${product._id}`}
+                        className="bg-white text-primary p-3 rounded-full hover:bg-primary hover:text-white shadow-lg transition-colors border border-primary/10"
+                        title="View Details"
+                    >
                         <Eye className="w-5 h-5" />
                     </Link>
                 </div>
             </div>
 
-            <div className="mt-4 space-y-1">
-                <h3 className="text-sm font-medium text-gray-200 group-hover:text-white transition-colors truncate">
+            <div className="mt-4 text-center">
+                <h3 className="text-base font-serif text-primary hover:text-secondary transition-colors truncate px-2">
                     {product.title}
                 </h3>
-                <p className="text-sm text-gray-400 capitalize">{product.category}</p>
-                <p className="text-base font-semibold text-white">
+                <p className="text-sm text-gray-500 capitalize">{product.category}</p>
+                <p className="text-lg font-medium text-primary mt-1">
                     ${product.price.toFixed(2)}
                 </p>
             </div>

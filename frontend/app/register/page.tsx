@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,101 +11,99 @@ export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const { login } = useAuth();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-            router.push('/login');
+            const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+            login(res.data.token, res.data.user);
         } catch (err: any) {
-            setError(err.response?.data?.msg || 'Registration failed');
+            setError(err.response?.data?.message || 'Registration failed');
         }
     };
 
     return (
-        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-black text-white">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-white">
-                    Create an account
-                </h2>
+        <div className="min-h-screen flex bg-white">
+            {/* Left Side - Image */}
+            <div className="hidden md:block w-1/2 relative bg-cream">
+                <img
+                    src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80"
+                    alt="Fashion"
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-primary/20 mix-blend-multiply" />
+                <div className="absolute bottom-12 left-12 text-white">
+                    <h3 className="text-4xl font-serif mb-4">Start Your Journey.</h3>
+                    <p className="text-lg text-white/90 max-w-md">Discover curated collections designed for the modern individual.</p>
+                </div>
             </div>
 
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                    {error && <div className="text-red-500 text-center">{error}</div>}
+            {/* Right Side - Form */}
+            <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-12 lg:p-16">
+                <div className="max-w-md w-full space-y-8">
+                    <div className="text-center md:text-left">
+                        <h2 className="text-3xl font-serif text-primary mb-2">Create Account</h2>
+                        <p className="text-gray-500">Sign up to get started.</p>
+                    </div>
 
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-300">
-                            Full Name
-                        </label>
-                        <div className="mt-2">
+                    {error && <div className="text-red-500 bg-red-50 p-3 text-sm">{error}</div>}
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                             <input
-                                id="name"
-                                name="name"
                                 type="text"
                                 required
+                                className="w-full px-4 py-3 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                placeholder="John Doe"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-300">
-                            Email address
-                        </label>
-                        <div className="mt-2">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <input
-                                id="email"
-                                name="email"
                                 type="email"
-                                autoComplete="email"
                                 required
+                                className="w-full px-4 py-3 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                placeholder="name@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center justify-between">
-                            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-300">
-                                Password
-                            </label>
-                        </div>
-                        <div className="mt-2">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                             <input
-                                id="password"
-                                name="password"
                                 type="password"
-                                autoComplete="new-password"
                                 required
+                                className="w-full px-4 py-3 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
+                                placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-purple-500 sm:text-sm sm:leading-6 px-3"
                             />
                         </div>
-                    </div>
 
-                    <div>
+                        <div className="text-sm text-gray-500">
+                            By creating an account, you agree to our <a href="#" className="text-primary hover:underline">Terms of Service</a> and <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
+                        </div>
+
                         <button
                             type="submit"
-                            className="flex w-full justify-center rounded-md bg-purple-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+                            className="w-full py-4 bg-primary text-white font-medium hover:bg-secondary transition-colors shadow-lg"
                         >
-                            Sign up
+                            Sign Up
                         </button>
-                    </div>
-                </form>
+                    </form>
 
-                <p className="mt-10 text-center text-sm text-gray-400">
-                    Already a member?{' '}
-                    <Link href="/login" className="font-semibold leading-6 text-purple-400 hover:text-purple-300">
-                        Sign in
-                    </Link>
-                </p>
+                    <p className="text-center text-sm text-gray-500 mt-8">
+                        Already have an account?{' '}
+                        <Link href="/login" className="font-semibold text-primary hover:underline">
+                            Sign In
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

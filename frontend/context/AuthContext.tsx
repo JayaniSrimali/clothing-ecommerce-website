@@ -31,9 +31,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
 
-        if (storedToken && storedUser) {
-            setToken(storedToken);
-            setUser(JSON.parse(storedUser));
+        if (storedToken && storedUser && storedUser !== "undefined") {
+            try {
+                setToken(storedToken);
+                setUser(JSON.parse(storedUser));
+            } catch (error) {
+                console.error("Error parsing stored user:", error);
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+            }
+        } else {
+            // Clean up potential bad state
+            if (storedToken || storedUser) {
+                localStorage.removeItem('user');
+                localStorage.removeItem('token');
+            }
         }
         setIsLoading(false);
     }, []);

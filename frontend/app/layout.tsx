@@ -14,23 +14,27 @@ export const metadata: Metadata = {
   description: 'Premium clothing for the modern individual.',
 };
 
+import { WishlistProvider } from '../context/WishlistContext';
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen bg-black text-white flex flex-col">
-              <Navbar />
-              <main className="flex-1 pt-16">
-                {children}
-              </main>
-              <Footer />
-            </div>
+            <WishlistProvider>
+              <div className="min-h-screen bg-background text-foreground flex flex-col">
+                <Navbar />
+                <main className="flex-1 pt-16">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
       </body>

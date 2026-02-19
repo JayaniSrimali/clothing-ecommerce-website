@@ -43,4 +43,33 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
+// Get all orders (Admin)
+router.get('/', async (req, res) => {
+    try {
+        const orders = await Order.find({}).populate('user', 'id name');
+        res.json(orders);
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+
+// Update order to delivered (Admin)
+router.put('/:id/deliver', async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+        if (order) {
+            order.isDelivered = true;
+            order.deliveredAt = Date.now();
+            const updatedOrder = await order.save();
+            res.json(updatedOrder);
+        } else {
+            res.status(404).json({ msg: 'Order not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+
 module.exports = router;

@@ -1,13 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #5D4037;
+  /* Dark Brown */
+  --color-secondary: #8D6E63;
+  /* Medium Brown */
+  --color-accent: #D7CCC8;
+  /* Light Beige */
+  --color-cream: #F5F5F0;
+  /* Off White */
+  --font-family-sans: 'Inter', sans-serif;
+}
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
-  --primary: #8b5cf6;
-  --secondary: #ec4899;
-  --accent: #6366f1;
+  --background: #ffffff;
+  --foreground: #2d2420;
+  /* Very Dark Brown/Black */
+  --primary: #5D4037;
+  --secondary: #8D6E63;
+  --accent: #D7CCC8;
 }
 
 body {
@@ -17,24 +28,21 @@ body {
   overflow-x: hidden;
 }
 
-@layer utilities {
-  .text-gradient {
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(to right, #c084fc, #ec4899, #818cf8);
-  }
+@utility text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, #5D4037, #8D6E63);
+}
 
-  .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
+@utility glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(93, 64, 55, 0.1);
+}
 
-  .glass-hover:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
+@utility section-cream {
+  background-color: #F5F5F0;
 }
 
 /* Smooth Scroll */
@@ -42,20 +50,43 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Brown Theme */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #F5F5F0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #A1887F;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #8D6E63;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
