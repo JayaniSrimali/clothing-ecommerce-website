@@ -7,8 +7,8 @@ import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, ShoppingBag, Send 
 export default function Footer() {
     const pathname = usePathname();
 
-    // Hide Footer on admin pages
-    if (pathname.startsWith('/admin')) return null;
+    // Hide Footer on admin, login, register, forgot-password, and reset-password pages
+    if (pathname.startsWith('/admin') || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname.startsWith('/reset-password')) return null;
 
     return (
         <footer className="relative mt-32 bg-primary text-white/80 font-sans border-t border-white/10">
