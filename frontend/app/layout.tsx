@@ -28,6 +28,7 @@ export default function RootLayout({
           <CartProvider>
             <WishlistProvider>
               <div className="min-h-screen bg-background text-foreground flex flex-col">
+                <Toaster position="top-center" />
                 <Navbar />
                 <main className="flex-1 ">
                   {children}

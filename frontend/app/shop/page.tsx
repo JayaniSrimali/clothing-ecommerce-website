@@ -109,9 +109,20 @@ function ShopContent() {
         fetchProducts();
     }, []);
 
+    const searchQuery = searchParams.get('search');
+
     // Effect: Filter & Sort Logic
     useEffect(() => {
         let result = [...products];
+
+        // 0. Search Filter
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter(p =>
+                p.title.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query)
+            );
+        }
 
         // 1. Filter
         if (selectedGender) {
@@ -134,7 +145,7 @@ function ShopContent() {
 
         setFilteredProducts(result);
         setCurrentPage(1); // Reset page on filter/sort change
-    }, [products, selectedGender, selectedCategories, priceRange, sortBy]);
+    }, [products, selectedGender, selectedCategories, priceRange, sortBy, searchQuery]);
 
     // Pagination Logic
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -336,8 +347,8 @@ function ShopContent() {
                                                         key={i + 1}
                                                         onClick={() => paginate(i + 1)}
                                                         className={`w-8 h-8 rounded-lg text-sm font-bold transition-all ${currentPage === i + 1
-                                                                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                                                                : 'text-gray-500 hover:bg-gray-100'
+                                                            ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                                                            : 'text-gray-500 hover:bg-gray-100'
                                                             }`}
                                                     >
                                                         {i + 1}

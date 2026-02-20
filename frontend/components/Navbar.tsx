@@ -3,18 +3,30 @@
 import Link from 'next/link';
 import { ShoppingCart, Menu, X, User, Search, Heart, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
+    const router = useRouter();
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const { cart } = useCart();
     const { user } = useAuth();
     const { wishlist } = useWishlist();
-    const pathname = usePathname();
+
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            setShowSearch(false);
+            router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
+        }
+    };
 
     // Hide Navbar on admin, login, register, forgot-password, and reset-password pages
     if (pathname.startsWith('/admin') || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname.startsWith('/reset-password')) return null;
@@ -65,8 +77,11 @@ export default function Navbar() {
                         {/* RIGHT: Search, Wishlist, Cart, Account */}
                         <div className="flex items-center space-x-4 lg:space-x-8">
 
-                            {/* Search Text Link */}
-                            <button className="hidden md:flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors group">
+                            {/* Search Button */}
+                            <button
+                                onClick={() => setShowSearch(true)}
+                                className="hidden md:flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors group"
+                            >
                                 <Search className="w-4 h-4" />
                                 <span className="uppercase tracking-wide">Search</span>
                             </button>
@@ -132,6 +147,45 @@ export default function Navbar() {
                 </div>
             </motion.nav>
 
+            {/* Search Overlay */}
+            <AnimatePresence>
+                {showSearch && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+                    >
+                        <button
+                            onClick={() => setShowSearch(false)}
+                            className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
+                        >
+                            <X size={32} />
+                        </button>
+
+                        <motion.form
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            onSubmit={handleSearch}
+                            className="w-full max-w-3xl"
+                        >
+                            <div className="relative border-b-2 border-white/20 hover:border-white transition-colors">
+                                <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-white/50 w-8 h-8" />
+                                <input
+                                    type="text"
+                                    autoFocus
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search for products..."
+                                    className="w-full bg-transparent border-none text-3xl md:text-5xl font-serif text-white placeholder-white/20 py-6 pl-12 focus:ring-0 focus:outline-none"
+                                />
+                            </div>
+                            <p className="text-white/40 mt-4 text-center text-sm">Press Enter to search</p>
+                        </motion.form>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {isOpen && (
@@ -167,10 +221,10 @@ export default function Navbar() {
                                 </motion.div>
                             ))}
                             <div className="flex justify-center space-x-8 pt-8 text-gray-600 border-t border-gray-100 w-full mt-4">
-                                <Link href="#" className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
+                                <button onClick={() => { setIsOpen(false); setShowSearch(true); }} className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
                                     <Search className="w-6 h-6 mb-1" />
                                     Search
-                                </Link>
+                                </button>
                                 <Link href="/wishlist" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
                                     <Heart className="w-6 h-6 mb-1" />
                                     Wishlist

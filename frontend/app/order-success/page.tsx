@@ -1,51 +1,59 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Check, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Check, ShoppingBag, ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function OrderSuccessPage() {
-    // Generate random order ID
-    const orderId = Math.random().toString(36).substr(2, 9).toUpperCase();
+    const searchParams = useSearchParams();
+    const orderId = searchParams.get('orderId') || 'PENDING-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Here you would typically fetch order details or clear session if needed
+        setMounted(true);
     }, []);
 
+    if (!mounted) return null;
+
     return (
-        <div className="bg-white min-h-screen pt-24 pb-12 text-primary flex items-center justify-center">
+        <div className="bg-[#FDFCFB] min-h-screen pt-32 pb-12 flex items-center justify-center font-sans">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="max-w-xl mx-auto px-4 text-center bg-cream p-12 rounded-xl border border-primary/10 shadow-2xl"
+                className="max-w-lg w-full mx-4 text-center bg-white p-8 md:p-12 rounded-3xl border border-gray-100 shadow-xl relative overflow-hidden"
             >
-                <div className="flex justify-center mb-8">
-                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg animate-bounce">
-                        <Check className="w-10 h-10" />
+                {/* Confetti / Success Visual */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#3E2723] via-[#F5C255] to-[#3E2723]" />
+
+                <div className="flex justify-center mb-8 relative">
+                    <div className="absolute inset-0 bg-green-100 rounded-full scale-150 animate-pulse opacity-50" />
+                    <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg relative z-10">
+                        <Check className="w-12 h-12 stroke-[3]" />
                     </div>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-serif text-primary mb-4">Order Placed!</h1>
-                <p className="text-xl text-gray-500 mb-8 font-light">
-                    Thank you for your purchase. Your order has been confirmed.
+                <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#3E2723] mb-4">Order Confirmed!</h1>
+                <p className="text-gray-500 mb-8 font-medium leading-relaxed">
+                    Thank you for your purchase. We've received your order and are getting it ready for shipment.
                 </p>
 
-                <div className="bg-white p-8 rounded-lg border border-gray-100 mb-8 shadow-sm">
-                    <p className="text-sm uppercase tracking-wide text-gray-400 mb-2">Order Number</p>
-                    <p className="text-3xl font-bold text-primary tracking-wider font-mono">#{orderId}</p>
+                <div className="bg-[#3E2723]/5 p-6 rounded-2xl border border-[#3E2723]/10 mb-8 text-left">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Order Reference</span>
+                        <Package size={16} className="text-[#3E2723]" />
+                    </div>
+                    <p className="text-2xl font-mono font-bold text-[#3E2723] tracking-wider break-all">#{orderId}</p>
+                    <p className="text-xs text-gray-400 mt-2">A confirmation email has been sent to your inbox.</p>
                 </div>
 
-                <p className="text-gray-600 mb-10 text-sm">
-                    An confirmation email has been sent to your inbox. You can track your order status in your profile or using our tracking page.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Link href="/shop" className="px-8 py-3 bg-white border border-primary text-primary font-bold hover:bg-cream transition-colors flex items-center justify-center gap-2">
-                        <ShoppingBag className="w-4 h-4" /> Continue Shopping
+                <div className="flex flex-col gap-3">
+                    <Link href="/profile" className="w-full py-3.5 bg-[#3E2723] text-white font-bold rounded-xl hover:bg-[#2D1B18] transition-all shadow-lg flex items-center justify-center gap-2">
+                        View Order Details <ArrowRight className="w-4 h-4" />
                     </Link>
-                    <Link href="/track-order" className="px-8 py-3 bg-primary text-white font-bold hover:bg-secondary transition-colors flex items-center justify-center gap-2 shadow-md">
-                        Track Order <ArrowRight className="w-4 h-4" />
+                    <Link href="/shop" className="w-full py-3.5 bg-white border-2 border-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-50 hover:text-[#3E2723] transition-colors flex items-center justify-center gap-2">
+                        <ShoppingBag className="w-4 h-4" /> Continue Shopping
                     </Link>
                 </div>
             </motion.div>

@@ -81,11 +81,23 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Links Column 1 */}
+                    {/* Shop Column */}
                     <div>
-                        <h4 className="font-bold text-white mb-6">Company</h4>
+                        <h4 className="font-bold text-white mb-6">Shop</h4>
                         <ul className="space-y-4 text-sm font-medium text-white/70">
-                            {['About Us', 'Services', 'Community', 'Testimonial'].map(item => (
+                            {['New Arrivals', 'Men', 'Women', 'Accessories', 'Sale'].map(item => (
+                                <li key={item}>
+                                    <Link href="/shop" className="hover:text-white transition-colors">{item}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Support Column */}
+                    <div>
+                        <h4 className="font-bold text-white mb-6">Customer Care</h4>
+                        <ul className="space-y-4 text-sm font-medium text-white/70">
+                            {['Order Status', 'Returns & Exchanges', 'Size Guide', 'FAQ'].map(item => (
                                 <li key={item}>
                                     <Link href="#" className="hover:text-white transition-colors">{item}</Link>
                                 </li>
@@ -93,25 +105,13 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Links Column 2 */}
+                    {/* Company Column */}
                     <div>
-                        <h4 className="font-bold text-white mb-6">Support</h4>
+                        <h4 className="font-bold text-white mb-6">About Aura</h4>
                         <ul className="space-y-4 text-sm font-medium text-white/70">
-                            {['Help Center', 'Tweet @ Us', 'Webians', 'Feedback'].map(item => (
+                            {['Our Story', 'Sustainability', 'Careers', 'Store Locator'].map(item => (
                                 <li key={item}>
-                                    <Link href="#" className="hover:text-white transition-colors">{item}</Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Links Column 3 */}
-                    <div>
-                        <h4 className="font-bold text-white mb-6">Links</h4>
-                        <ul className="space-y-4 text-sm font-medium text-white/70">
-                            {['Courses', 'Become Teacher', 'Service', 'All in One'].map(item => (
-                                <li key={item}>
-                                    <Link href="#" className="hover:text-white transition-colors">{item}</Link>
+                                    <Link href="/about" className="hover:text-white transition-colors">{item}</Link>
                                 </li>
                             ))}
                         </ul>
