@@ -23,8 +23,8 @@ export default function RegisterPage() {
         setLoading(true);
         try {
             const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-            login(res.data.token, res.data.user);
-            router.push('/');
+            // login(res.data.token, res.data.user); // Don't auto-login
+            router.push('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Registration failed');
         } finally {
