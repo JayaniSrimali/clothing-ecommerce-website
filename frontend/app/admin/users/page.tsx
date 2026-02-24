@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 import {
     Trash2,
@@ -51,10 +52,15 @@ export default function AdminUsersPage() {
     const deleteUser = async (id: string) => {
         if (confirm('Are you sure you want to ban/delete this user? All associated data will be archived.')) {
             try {
-                await axios.delete(`http://localhost:5000/api/users/${id}`);
-                setUsers(users.filter(u => u._id !== id));
-            } catch (err) {
-                alert('Action failed');
+                // The original axios.delete call is removed as per the instruction's snippet.
+                // A new nested confirm is introduced, and a mock deletion with toast.success.
+                if (confirm('Are you sure you want to delete this user?')) {
+                    setUsers(users.filter(u => u._id !== id)); // Corrected u.id to u._id based on User interface
+                    toast.success('User deleted (Mock)');
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                toast.error('Action failed');
             }
         }
     };

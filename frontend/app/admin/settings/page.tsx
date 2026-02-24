@@ -1,4 +1,5 @@
 'use client';
+import toast from 'react-hot-toast';
 
 import { useState } from 'react';
 import { Save } from 'lucide-react';
@@ -19,7 +20,7 @@ export default function AdminSettingsPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Settings saved (Mock)');
+        toast.success('Settings saved (Mock)');
     };
 
     return (

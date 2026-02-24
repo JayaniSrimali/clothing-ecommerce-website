@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 import Link from 'next/link';
 import {
@@ -46,6 +47,7 @@ export default function AdminProductsPage() {
         } catch (err) {
             console.error(err);
             setLoading(false);
+            toast.error('Failed to fetch products'); // Added toast for fetch error
         }
     };
 
@@ -54,8 +56,10 @@ export default function AdminProductsPage() {
             try {
                 await axios.delete(`http://localhost:5000/api/products/${id}`);
                 setProducts(products.filter(p => p._id !== id));
+                toast.success('Product deleted successfully!'); // Added success toast
             } catch (err) {
-                alert('Failed to delete product');
+                console.error('Error deleting product:', err); // Added console.error for debugging
+                toast.error('Failed to delete product'); // Replaced alert with toast.error
             }
         }
     };
