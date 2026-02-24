@@ -9,7 +9,8 @@
   /* Light Beige */
   --color-cream: #F5F5F0;
   /* Off White */
-  --font-family-sans: 'Inter', sans-serif;
+  --font-family-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-family-heading: var(--font-outfit), 'Outfit', sans-serif;
 }
 
 :root {
