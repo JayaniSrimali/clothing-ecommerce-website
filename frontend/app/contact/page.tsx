@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
@@ -15,7 +16,7 @@ export default function ContactPage() {
         e.preventDefault();
         // Here you would typically handle the form submission, e.g., send data to an API
         console.log('Form submitted:', formData);
-        alert('Thank you for your message! We will get back to you soon.');
+        toast.success('Thank you for your message! We will get back to you soon.');
         setFormData({ name: '', email: '', subject: '', message: '' });
     };
 
