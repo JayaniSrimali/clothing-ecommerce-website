@@ -41,111 +41,107 @@ export default function Navbar() {
 
     return (
         <>
-            <motion.nav
-                initial={{ y: -100 }}
-                animate={{ y: 0 }}
-                className="fixed w-full z-50 bg-primary/95 backdrop-blur-md shadow-lg border-b border-white/10"
-            >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-20">
-                        {/* LEFT: Logo & Nav Links */}
-                        <div className="flex items-center gap-12">
-                            {/* Logo */}
-                            <Link href="/" className="group flex items-center gap-2">
-                                <span className="text-2xl font-black tracking-tighter text-white">
-                                    AURA.
-                                </span>
-                            </Link>
+            <AnimatePresence mode="wait">
+                <motion.nav
+                    initial={{ y: -100, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="fixed w-full z-50 transition-all duration-300 border-b border-white/5 bg-primary/95 backdrop-blur-xl shadow-2xl"
+                >
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+                        <div className="flex items-center justify-between h-20 md:h-24">
+                            {/* LEFT: Logo & Nav Links */}
+                            <div className="flex items-center gap-12 lg:gap-20">
+                                {/* Logo */}
+                                <Link href="/" className="group flex items-center gap-2">
+                                    <span className="text-2xl md:text-3xl font-black tracking-[0.15em] text-white font-outfit uppercase">
+                                        Aura<span className="text-accent">.</span>
+                                    </span>
+                                </Link>
 
-                            {/* Desktop Links - Left Aligned */}
-                            <div className="hidden md:flex items-center space-x-8">
-                                {navLinks.map((link) => (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        className={`text-sm font-medium transition-colors relative group uppercase tracking-wide ${link.isSale ? 'text-red-300 hover:text-red-200 font-bold' : 'text-white/80 hover:text-white'
-                                            }`}
-                                    >
-                                        {link.name}
-                                        <span className={`absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${link.isSale ? 'bg-red-300' : 'bg-white'
-                                            }`} />
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* RIGHT: Search, Wishlist, Cart, Account */}
-                        <div className="flex items-center space-x-4 lg:space-x-8">
-
-                            {/* Search Button */}
-                            <button
-                                onClick={() => setShowSearch(true)}
-                                className="hidden md:flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors group"
-                            >
-                                <Search className="w-4 h-4" />
-                                <span className="uppercase tracking-wide">Search</span>
-                            </button>
-
-                            <div className="h-4 w-px bg-white/20 hidden md:block" />
-
-                            {/* Wishlist Text Link */}
-                            <Link href="/wishlist" className="hidden md:flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors group">
-                                <div className="relative">
-                                    <Heart className="w-4 h-4" />
-                                    {wishlist.length > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-white text-primary text-[8px] font-bold w-2.5 h-2.5 rounded-full flex items-center justify-center">
-                                            {wishlist.length}
-                                        </span>
-                                    )}
-                                </div>
-                                <span className="uppercase tracking-wide">Wishlist</span>
-                            </Link>
-
-                            {/* Cart Text Link */}
-                            <Link href="/cart" className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors group">
-                                <div className="relative">
-                                    <ShoppingCart className="w-4 h-4" />
-                                    {cart.length > 0 && (
-                                        <motion.span
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            className="absolute -top-1 -right-1 bg-white text-primary text-[8px] font-bold w-2.5 h-2.5 rounded-full flex items-center justify-center shadow-sm"
+                                {/* Desktop Links */}
+                                <div className="hidden md:flex items-center space-x-10">
+                                    {navLinks.map((link) => (
+                                        <Link
+                                            key={link.name}
+                                            href={link.href}
+                                            className={`text-[13px] font-semibold transition-all duration-500 relative group uppercase tracking-[0.1em] font-outfit ${link.isSale ? 'text-red-300 hover:text-red-400' : 'text-white/80 hover:text-white'
+                                                }`}
                                         >
-                                            {cart.reduce((a, b) => a + b.quantity, 0)}
-                                        </motion.span>
-                                    )}
+                                            {link.name}
+                                            <span className={`absolute -bottom-1.5 left-0 w-0 h-[2px] rounded-full transition-all duration-300 ease-out group-hover:w-full ${link.isSale ? 'bg-red-300' : 'bg-white'
+                                                }`} />
+                                        </Link>
+                                    ))}
                                 </div>
-                                <span className="uppercase tracking-wide hidden md:block">Cart</span>
-                            </Link>
+                            </div>
 
-                            {/* Account Text Link */}
-                            {user ? (
-                                <Link href="/profile" className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors">
-                                    <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center text-primary text-[10px] font-bold">
-                                        {user.name.charAt(0)}
-                                    </div>
-                                    <span className="uppercase tracking-wide hidden md:block">Account</span>
-                                </Link>
-                            ) : (
-                                <Link href="/login" className="flex items-center gap-2 text-sm font-medium text-white/80 hover:text-white transition-colors">
-                                    <User className="w-4 h-4" />
-                                    <span className="uppercase tracking-wide hidden md:block">Login</span>
-                                </Link>
-                            )}
-
-                            {/* Mobile Menu Button */}
-                            <div className="md:hidden ml-4">
+                            {/* RIGHT: Search, Wishlist, Cart, Account */}
+                            <div className="flex items-center space-x-6 lg:space-x-10">
+                                {/* Search Button */}
                                 <button
-                                    onClick={() => setIsOpen(!isOpen)}
-                                    className="text-white p-1"
+                                    onClick={() => setShowSearch(true)}
+                                    className="hidden md:flex items-center gap-2.5 text-[12px] font-bold text-white/80 hover:text-white transition-all duration-300 group uppercase tracking-widest font-outfit"
                                 >
-                                    {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                                    <Search className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                                    <span>Search</span>
                                 </button>
+
+                                <div className="h-6 w-[1.5px] bg-white/10 hidden md:block" />
+
+                                <div className="flex items-center space-x-5 lg:space-x-8">
+                                    {/* Wishlist */}
+                                    <Link href="/wishlist" className="relative text-white/80 hover:text-white transition-all duration-300 group">
+                                        <Heart className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-110" />
+                                        {wishlist.length > 0 && (
+                                            <span className="absolute -top-1.5 -right-1.5 bg-white text-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-primary">
+                                                {wishlist.length}
+                                            </span>
+                                        )}
+                                    </Link>
+
+                                    {/* Cart */}
+                                    <Link href="/cart" className="relative text-white/80 hover:text-white transition-all duration-300 group">
+                                        <ShoppingCart className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-110" />
+                                        {cart.length > 0 && (
+                                            <motion.span
+                                                initial={{ scale: 0 }}
+                                                animate={{ scale: 1 }}
+                                                className="absolute -top-1.5 -right-1.5 bg-accent text-primary text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-primary shadow-sm"
+                                            >
+                                                {cart.reduce((a, b) => a + b.quantity, 0)}
+                                            </motion.span>
+                                        )}
+                                    </Link>
+
+                                    {/* Account */}
+                                    {user ? (
+                                        <Link href="/profile" className="flex items-center gap-3 transition-all duration-300">
+                                            <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white text-[12px] font-bold hover:bg-white hover:text-primary transition-colors">
+                                                {user.name.charAt(0)}
+                                            </div>
+                                        </Link>
+                                    ) : (
+                                        <Link href="/login" className="text-white/80 hover:text-white transition-all duration-300 group">
+                                            <User className="w-[22px] h-[22px] transition-transform duration-300 group-hover:scale-110" />
+                                        </Link>
+                                    )}
+
+                                    {/* Mobile Menu Button */}
+                                    <div className="md:hidden">
+                                        <button
+                                            onClick={() => setIsOpen(!isOpen)}
+                                            className="text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+                                        >
+                                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </motion.nav>
+                </motion.nav>
+            </AnimatePresence>
 
             {/* Search Overlay */}
             <AnimatePresence>
@@ -193,47 +189,65 @@ export default function Navbar() {
                         initial={{ opacity: 0, x: '100%' }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: 'tween', duration: 0.3 }}
-                        className="fixed inset-0 z-40 bg-white md:hidden pt-24 px-8 flex flex-col items-center"
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 z-[100] bg-cream md:hidden pt-32 px-10 flex flex-col"
                     >
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-6 right-6 text-gray-800"
+                            className="absolute top-8 right-8 text-primary p-2 hover:bg-primary/5 rounded-full transition-colors"
                         >
                             <X className="w-8 h-8" />
                         </button>
 
-                        <div className="flex flex-col space-y-8 text-center text-xl font-light tracking-wide w-full text-primary">
+                        <div className="flex flex-col space-y-6 text-left">
                             {navLinks.map((link, idx) => (
                                 <motion.div
                                     key={link.name}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * idx }}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 * idx, duration: 0.5 }}
                                 >
                                     <Link
                                         href={link.href}
                                         onClick={() => setIsOpen(false)}
-                                        className={`block py-4 border-b border-gray-50 hover:text-secondary transition-colors ${link.isSale ? 'text-red-500 font-bold' : ''}`}
+                                        className={`text-4xl font-black uppercase tracking-tighter font-outfit transition-all ${link.isSale ? 'text-red-500' : 'text-primary'}`}
                                     >
-                                        {link.name}
+                                        {link.name}<span className="text-secondary opacity-50">.</span>
                                     </Link>
                                 </motion.div>
                             ))}
-                            <div className="flex justify-center space-x-8 pt-8 text-gray-600 border-t border-gray-100 w-full mt-4">
-                                <button onClick={() => { setIsOpen(false); setShowSearch(true); }} className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
-                                    <Search className="w-6 h-6 mb-1" />
-                                    Search
-                                </button>
-                                <Link href="/wishlist" onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
-                                    <Heart className="w-6 h-6 mb-1" />
-                                    Wishlist
-                                </Link>
-                                <Link href={user ? "/profile" : "/login"} onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1 text-xs uppercase tracking-widest">
-                                    <User className="w-6 h-6 mb-1" />
-                                    Account
-                                </Link>
-                            </div>
+                        </div>
+
+                        <div className="mt-auto mb-20 grid grid-cols-3 gap-4 pt-10 border-t border-primary/10">
+                            <button
+                                onClick={() => { setIsOpen(false); setShowSearch(true); }}
+                                className="flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 font-outfit"
+                            >
+                                <div className="w-12 h-12 rounded-full border border-primary/10 flex items-center justify-center mb-1">
+                                    <Search className="w-5 h-5" />
+                                </div>
+                                Search
+                            </button>
+                            <Link
+                                href="/wishlist"
+                                onClick={() => setIsOpen(false)}
+                                className="flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 font-outfit"
+                            >
+                                <div className="w-12 h-12 rounded-full border border-primary/10 flex items-center justify-center mb-1">
+                                    <Heart className="w-5 h-5" />
+                                </div>
+                                Wishlist
+                            </Link>
+                            <Link
+                                href={user ? "/profile" : "/login"}
+                                onClick={() => setIsOpen(false)}
+                                className="flex flex-col items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary/60 font-outfit"
+                            >
+                                <div className="w-12 h-12 rounded-full border border-primary/10 flex items-center justify-center mb-1">
+                                    <User className="w-5 h-5" />
+                                </div>
+                                Account
+                            </Link>
                         </div>
                     </motion.div>
                 )}
