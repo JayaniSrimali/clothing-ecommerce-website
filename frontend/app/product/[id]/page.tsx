@@ -1,8 +1,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { useWishlist } from '../../../context/WishlistContext';
 import {
@@ -12,7 +13,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { toast, Toaster } from 'react-hot-toast';
 
 interface Product {
     _id: string;
@@ -122,7 +122,6 @@ export default function ProductPage() {
     const handleBuyNow = () => {
         if (!product) return;
         addToCart({ ...product, quantity, id: product._id, name: product.title, image: currentImage }); // Use current image
-        toast.success('Proceeding to Checkout');
         router.push('/checkout'); // Assuming a checkout page exists or will exist
     };
 
@@ -130,7 +129,6 @@ export default function ProductPage() {
     const handleAddToCart = () => {
         if (!product) return;
         addToCart({ ...product, quantity, id: product._id, name: product.title, image: currentImage });
-        toast.success('Added to Cart');
     };
 
     // Handle Share
@@ -145,7 +143,7 @@ export default function ProductPage() {
     return (
         <div className="min-h-screen bg-white text-gray-800 pt-28 pb-12 font-sans relative">
             {/* Toast Notifications */}
-            <Toaster position="top-center" reverseOrder={false} />
+
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -260,8 +258,8 @@ export default function ProductPage() {
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
                                         className={`w-12 h-12 flex items-center justify-center text-sm font-medium border rounded-md transition-all ${selectedSize === size
-                                                ? 'bg-primary text-white border-primary shadow-md'
-                                                : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                                            ? 'bg-primary text-white border-primary shadow-md'
+                                            : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:text-gray-900'
                                             }`}
                                     >
                                         {size}
@@ -336,8 +334,8 @@ export default function ProductPage() {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`px-8 py-4 text-base md:text-lg font-medium transition-all relative ${activeTab === tab
-                                        ? 'text-gray-900 font-bold'
-                                        : 'text-gray-400 hover:text-gray-600'
+                                    ? 'text-gray-900 font-bold'
+                                    : 'text-gray-400 hover:text-gray-600'
                                     }`}
                             >
                                 {tab}

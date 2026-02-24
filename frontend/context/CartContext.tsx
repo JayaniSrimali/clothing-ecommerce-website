@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import toast from 'react-hot-toast';
 
 interface CartItem {
     id: string;
@@ -38,22 +39,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }, [cart]);
 
     const addToCart = (item: CartItem) => {
-        setCart((prev) => {
-            const existing = prev.find((i) => i.id === item.id);
-            if (existing) {
-                return prev.map((i) =>
-                    i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-                );
-            }
-            return [...prev, { ...item, quantity: 1 }];
-        });
+        const existing = cart.find((i) => i.id === item.id);
+
+        if (existing) {
+            toast.success(`Updated quantity for ${item.name}`);
+            setCart((prev) =>
+                prev.map((i) =>
+                    i.id === item.id ? { ...i, quantity: i.quantity + +item.quantity } : i
+                )
+            );
+        } else {
+            toast.success(`Added ${item.name} to cart`);
+            setCart((prev) => [...prev, { ...item, quantity: item.quantity }]);
+        }
     };
 
     const removeFromCart = (id: string) => {
         setCart((prev) => prev.filter((item) => item.id !== id));
+        toast.error('Removed item from cart');
     };
 
-    const clearCart = () => setCart([]);
+    const clearCart = () => {
+        setCart([]);
+        toast.success('Cart cleared');
+    };
 
     const cartTotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
