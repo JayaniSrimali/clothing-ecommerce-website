@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -23,9 +24,12 @@ export default function LoginPage() {
         try {
             const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
             login(res.data.token, res.data.user);
+            toast.success('Successfully logged in!');
             router.push('/');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Invalid email or password');
+            const msg = err.response?.data?.message || 'Invalid email or password';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }

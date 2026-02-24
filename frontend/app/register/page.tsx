@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -24,9 +25,12 @@ export default function RegisterPage() {
         try {
             const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
             // login(res.data.token, res.data.user); // Don't auto-login
+            toast.success('Registration successful! Please log in.');
             router.push('/login');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Registration failed');
+            const msg = err.response?.data?.message || 'Registration failed';
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
