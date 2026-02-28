@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import {
     TrendingUp,
@@ -31,31 +33,42 @@ import {
     Pie
 } from 'recharts';
 
-const salesData = [
-    { name: 'Mon', sales: 4000, orders: 240 },
-    { name: 'Tue', sales: 3000, orders: 198 },
-    { name: 'Wed', sales: 2000, orders: 150 },
-    { name: 'Thu', sales: 2780, orders: 180 },
-    { name: 'Fri', sales: 1890, orders: 130 },
-    { name: 'Sat', sales: 2390, orders: 170 },
-    { name: 'Sun', sales: 3490, orders: 210 },
-];
-
-const categoryData = [
-    { name: 'Men', value: 400, color: '#2D2424' },
-    { name: 'Women', value: 300, color: '#B2A08B' },
-    { name: 'Kids', value: 200, color: '#E5D6C5' },
-    { name: 'Accessories', value: 100, color: '#5B4B49' },
-];
-
-const stats = [
-    { title: 'Gross Revenue', value: '$24,560.80', change: '+12.5%', trend: 'up', icon: DollarSign, color: 'bg-emerald-500' },
-    { title: 'Total Orders', value: '1,245', change: '-3.2%', trend: 'down', icon: ShoppingBag, color: 'bg-blue-500' },
-    { title: 'Active Customers', value: '4,890', change: '+24%', trend: 'up', icon: Users, color: 'bg-purple-500' },
-    { title: 'Conversion Rate', value: '3.24%', change: '+1.1%', trend: 'up', icon: Activity, color: 'bg-orange-500' },
-];
-
 export default function AdminDashboard() {
+    const [dashboardData, setDashboardData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const res = await axios.get('http://localhost:5000/api/admin/dashboard');
+                setDashboardData(res.data);
+                setLoading(false);
+            } catch (err) {
+                console.error('Failed to fetch dashboard data', err);
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full" />
+            </div>
+        );
+    }
+
+    const { stats: apiStats, recentOrders, categoryData, salesData } = dashboardData;
+
+    const stats = [
+        { title: 'Gross Revenue', value: `$${apiStats.revenue.toLocaleString()}`, change: '+12.5%', trend: 'up', icon: DollarSign, color: 'bg-emerald-500' },
+        { title: 'Total Orders', value: apiStats.totalOrders.toLocaleString(), change: '+3.2%', trend: 'up', icon: ShoppingBag, color: 'bg-blue-500' },
+        { title: 'Active Customers', value: apiStats.activeCustomers.toLocaleString(), change: '+8%', trend: 'up', icon: Users, color: 'bg-purple-500' },
+        { title: 'Conversion Rate', value: `${apiStats.conversionRate}%`, change: '+1.1%', trend: 'up', icon: Activity, color: 'bg-orange-500' },
+    ];
+
     return (
         <div className="space-y-8 pb-12">
             {/* Page Title & Actions */}
@@ -177,7 +190,7 @@ export default function AdminDashboard() {
                                     paddingAngle={8}
                                     dataKey="value"
                                 >
-                                    {categoryData.map((entry, index) => (
+                                    {categoryData.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
                                     ))}
                                 </Pie>
@@ -191,7 +204,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="mt-8 space-y-4">
-                        {categoryData.map((cat) => (
+                        {categoryData.map((cat: any) => (
                             <div key={cat.name} className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
@@ -215,38 +228,37 @@ export default function AdminDashboard() {
                         <button className="text-sm font-bold text-primary hover:underline underline-offset-4">View History</button>
                     </div>
                     <div className="divide-y divide-gray-50">
-                        {[
-                            { id: '#1234', user: 'Kasun Perera', amount: '$120.00', status: 'Processing', time: '2 mins ago' },
-                            { id: '#1233', user: 'Dilini Fernando', amount: '$85.00', status: 'Shipped', time: '1 hour ago' },
-                            { id: '#1232', user: 'Pathum Nissanka', amount: '$240.00', status: 'Delivered', time: '3 hours ago' },
-                            { id: '#1231', user: 'Sahan Smith', amount: '$59.99', status: 'Pending', time: '5 hours ago' },
-                        ].map((order, idx) => (
-                            <motion.div
-                                key={order.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
-                            >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-cream flex items-center justify-center text-primary">
-                                        <Clock size={20} />
+                        {recentOrders.length === 0 ? (
+                            <div className="p-8 text-center text-gray-400 font-medium">No recent orders found.</div>
+                        ) : (
+                            recentOrders.map((order: any, idx: number) => (
+                                <motion.div
+                                    key={order.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors cursor-pointer"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-2xl bg-cream flex items-center justify-center text-primary border border-gray-100">
+                                            <Clock size={20} />
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-primary text-sm">{order.user}</p>
+                                            <p className="text-xs text-gray-400 font-medium">Order {order.id} • {order.time}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-bold text-primary text-sm">{order.user}</p>
-                                        <p className="text-xs text-gray-400 font-medium">Order {order.id} • {order.time}</p>
+                                    <div className="text-right">
+                                        <p className="font-black text-primary text-sm">{order.amount}</p>
+                                        <span className={`text-[10px] font-bold uppercase tracking-widest ${order.status === 'Delivered' ? 'text-emerald-500' :
+                                            order.status === 'Processing' ? 'text-blue-500' : 'text-orange-500'
+                                            }`}>
+                                            {order.status}
+                                        </span>
                                     </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-black text-primary text-sm">{order.amount}</p>
-                                    <span className={`text-[10px] font-bold uppercase tracking-widest ${order.status === 'Delivered' ? 'text-emerald-500' :
-                                        order.status === 'Shipped' ? 'text-blue-500' : 'text-orange-500'
-                                        }`}>
-                                        {order.status}
-                                    </span>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            ))
+                        )}
                     </div>
                 </div>
 
