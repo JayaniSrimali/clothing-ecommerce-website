@@ -88,16 +88,16 @@ function ShopContent() {
                 else throw new Error("No products");
             } catch (err) {
                 const demoProducts: Product[] = [
-                    { _id: '1', title: 'Wool Blend Coat', price: 299.99, image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1036', category: 'Jackets', gender: 'Women', colors: ['#A1887F', '#000'], isNew: true },
-                    { _id: '2', title: 'Linen Summer Dress', price: 159.50, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1083', category: 'Dresses', gender: 'Women', colors: ['#F5F5DC'] },
-                    { _id: '3', title: 'Cashmere Sweater', price: 89.99, image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000', category: 'Hoodies', gender: 'Men', colors: ['#333'], isNew: true },
+                    { _id: '1', title: 'Wool Blend Coat', price: 299.99, image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000', category: 'Jackets', gender: 'Women', colors: ['#A1887F', '#000'], isNew: true },
+                    { _id: '2', title: 'Linen Summer Dress', price: 159.50, image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1083', category: 'Dresses', gender: 'Women', colors: ['#F5F5DC'] },
+                    { _id: '3', title: 'Cashmere Sweater', price: 89.99, image: 'https://images.unsplash.com/photo-1488161628813-244a2ce0a0d5?q=80&w=1000', category: 'Hoodies', gender: 'Men', colors: ['#333'], isNew: true },
                     { _id: '4', title: 'Classic Chinos', price: 79.99, image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?q=80&w=1000', category: 'Pants', gender: 'Men', colors: ['#D2B48C', '#000'] },
-                    { _id: '5', title: 'Silk Blouse', price: 120.00, image: 'https://images.unsplash.com/photo-1517445312882-566f1745d9b3?q=80&w=1000', category: 'Shirts', gender: 'Women', colors: ['#FFF'] },
-                    { _id: '6', title: 'Leather Loafers', price: 199.99, image: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?q=80&w=1000', category: 'Shoes', gender: 'Men', colors: ['#8D6E63'] },
+                    { _id: '5', title: 'Silk Blouse', price: 120.00, image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=1000', category: 'Shirts', gender: 'Women', colors: ['#FFF'] },
+                    { _id: '6', title: 'Leather Loafers', price: 199.99, image: 'https://images.unsplash.com/photo-1520639889313-7272a74b1c73?q=80&w=1000', category: 'Shoes', gender: 'Men', colors: ['#8D6E63'] },
                     { _id: '7', title: 'Running Sneakers', price: 129.99, image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000', category: 'Shoes', gender: 'Kids', colors: ['#FF0000', '#000'], isNew: true },
-                    { _id: '8', title: 'Denim Jacket', price: 89.99, image: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?q=80&w=1000', category: 'Jackets', gender: 'Kids', colors: ['#1E3A8A'] },
+                    { _id: '8', title: 'Denim Jacket', price: 89.99, image: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?q=80&w=1000', category: 'Jackets', gender: 'Kids', colors: ['#1E3A8A'] },
                     { _id: '9', title: 'Summer Hat', price: 45.00, image: 'https://images.unsplash.com/photo-1514327605112-b887c0e61c0a?q=80&w=1000', category: 'Accessories', gender: 'Women', colors: ['#F5F5DC'] },
-                    { _id: '10', title: 'Leather Belt', price: 35.00, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=1000', category: 'Accessories', gender: 'Men', colors: ['#3e2723'] },
+                    { _id: '10', title: 'Leather Belt', price: 35.00, image: 'https://images.unsplash.com/photo-1513115044-a560101f30b2?q=80&w=1000', category: 'Accessories', gender: 'Men', colors: ['#3e2723'] },
                     { _id: '11', title: 'Kids T-Shirt', price: 25.00, image: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?q=80&w=1000', category: 'T-Shirts', gender: 'Kids', colors: ['#FFC107'] },
                     { _id: '12', title: 'Winter Scarf', price: 40.00, image: 'https://images.unsplash.com/photo-1520903920248-2651036f0194?q=80&w=1000', category: 'Accessories', gender: 'Women', colors: ['#B71C1C'] },
                 ];
@@ -383,7 +383,7 @@ function ShopContent() {
                 <div className="relative rounded-2xl overflow-hidden bg-black text-white h-[400px] flex items-center">
                     <div className="absolute inset-0">
                         <img
-                            src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e12?q=80&w=2070&auto=format&fit=crop"
                             alt="Promo"
                             className="w-full h-full object-cover opacity-60"
                         />

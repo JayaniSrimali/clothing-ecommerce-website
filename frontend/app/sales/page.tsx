@@ -118,7 +118,7 @@ export default function SalesPage() {
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070"
+                            src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e12?q=80&w=2070"
                             className="absolute right-0 top-0 w-3/4 h-full object-cover rounded-l-full shadow-2xl border-4 border-white/10"
                         />
                         <div className="absolute top-10 right-10 bg-[#D32F2F] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center font-bold shadow-xl rotate-12 animate-bounce">

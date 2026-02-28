@@ -47,10 +47,10 @@ export default function ProductPage() {
 
     // Mock Options with Images (for changing image on color click)
     const colorOptions = [
-        { name: 'Brown', hex: '#8D6E63', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1036' },
-        { name: 'Red', hex: '#D32F2F', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1083' }, // Only for demo effect
-        { name: 'Blue', hex: '#1976D2', image: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?q=80&w=1000' },
-        { name: 'Green', hex: '#388E3C', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000' }
+        { name: 'Brown', hex: '#8D6E63', image: 'https://images.unsplash.com/photo-1542272454315-4c01d7afdf4a?q=80&w=1036' },
+        { name: 'Red', hex: '#D32F2F', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1083' },
+        { name: 'Blue', hex: '#1976D2', image: 'https://images.unsplash.com/photo-1543076447-215ad9ba6923?q=80&w=1000' },
+        { name: 'Green', hex: '#388E3C', image: 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e12?q=80&w=1000' }
     ];
 
     const sizes = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
@@ -68,17 +68,17 @@ export default function ProductPage() {
                 // Fallback for demo
                 const demoProduct = {
                     _id: id as string,
-                    title: 'Trendy Brown Coat',
-                    price: 75.00,
-                    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1036',
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                    category: 'Coats',
-                    stock: 12,
+                    title: 'Elite Heritage Coat',
+                    price: 245.00,
+                    image: 'https://images.unsplash.com/photo-1542272454315-4c01d7afdf4a?q=80&w=1036',
+                    description: 'A masterpiece of contemporary tailoring, this elite heritage coat combines timeless elegance with modern comfort. Crafted from premium sustainable wool blend for the discerning individual.',
+                    category: 'Outerwear',
+                    stock: 5,
                     images: [
-                        'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=1036',
-                        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=300',
-                        'https://images.unsplash.com/photo-1529139574466-a302d2052574?q=80&w=300',
-                        'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=300'
+                        'https://images.unsplash.com/photo-1542272454315-4c01d7afdf4a?q=80&w=1036',
+                        'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?q=80&w=1000',
+                        'https://images.unsplash.com/photo-1544022613-e87ce7526edb?q=80&w=1000',
+                        'https://images.unsplash.com/photo-1542272606-767a36e5efff?q=80&w=1000'
                     ]
                 };
                 setProduct(demoProduct);
@@ -174,6 +174,9 @@ export default function ProductPage() {
                                     key={currentImage}
                                     src={currentImage}
                                     alt={product.title}
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1542272454315-4c01d7afdf4a?q=80&w=1036';
+                                    }}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}

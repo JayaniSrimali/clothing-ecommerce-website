@@ -96,7 +96,7 @@ export default function ContactPage() {
                     {/* Simple Map Placeholder */}
                     <div className="w-full h-64 bg-gray-200 rounded-xl overflow-hidden shadow-inner relative group">
                         <img
-                            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1541339907198-e08759dfc3ef?q=80&w=800&auto=format&fit=crop"
                             alt="Map Location"
                             className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
                         />
